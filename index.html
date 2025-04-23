@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz de Perguntas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .quiz-container {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+    .question {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+    .answers button {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background: #e0e0e0;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .answers button:hover {
+      background: #d0d0d0;
+    }
+    #next-btn {
+      display: none;
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: none;
+      background: #007BFF;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #next-btn:hover {
+      background: #0056b3;
+    }
+    .score {
+      font-size: 1.2rem;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <div id="quiz">
+      <div class="question" id="question">Carregando pergunta...</div>
+      <div class="answers" id="answers"></div>
+      <button id="next-btn">Próxima Pergunta</button>
+      <div class="score" id="score"></div>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "Qual é a capital do Brasil?",
+        answers: ["São Paulo", "Rio de Janeiro", "Brasília", "Salvador"],
+        correct: 2
+      },
+      {
+        question: "Quanto é 5 + 3?",
+        answers: ["5", "8", "10", "15"],
+        correct: 1
+      },
+      {
+        question: "Qual linguagem é usada para estilizar páginas web?",
+        answers: ["HTML", "CSS", "JavaScript", "Python"],
+        correct: 1
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById('question');
+    const answersEl = document.getElementById('answers');
+    const nextBtn = document.getElementById('next-btn');
+    const scoreEl = document.getElementById('score');
+
+    function showQuestion() {
+      resetState();
+      const q = questions[currentQuestion];
+      questionEl.textContent = q.question;
+      q.answers.forEach((answer, index) => {
+        const button = document.createElement('button');
+        button.textContent = answer;
+        button.onclick = () => selectAnswer(index);
+        answersEl.appendChild(button);
+      });
+    }
+
+    function resetState() {
+      nextBtn.style.display = 'none';
+      answersEl.innerHTML = '';
+      scoreEl.textContent = '';
+    }
+
+    function selectAnswer(index) {
+      const q = questions[currentQuestion];
+      const buttons = answersEl.querySelectorAll('button');
+      buttons.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === q.correct) btn.style.background = '#8fbc8f';
+        if (i === index && i !== q.correct) btn.style.background = '#f08080';
+      });
+      if (index === q.correct) score++;
+      nextBtn.style.display = 'inline-block';
+    }
+
+    nextBtn.onclick = () => {
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      } else {
+        showScore();
+      }
+    }
+
+    function showScore() {
+      questionEl.textContent = 'Quiz Concluído!';
+      answersEl.innerHTML = '';
+      nextBtn.style.display = 'none';
+      scoreEl.textContent = `Você acertou ${score} de ${questions.length} perguntas.`;
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
